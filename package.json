@@ -1,0 +1,44 @@
+{
+  "name": "evm-rpcs-list",
+  "version": "1.0.0",
+  "description": "List of EVM chains & their RPCs in one place",
+  "author": "apoorvlathey <apoorv.xyz>",
+  "license": "MIT",
+  "homepage": "https://github.com/apoorvlathey/evm-rpcs-list#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apoorvlathey/evm-rpcs-list"
+  },
+  "bugs": {
+    "url": "https://github.com/apoorvlathey/evm-rpcs-list/issues"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c --context this --exports default",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build",
+    "version": "git add -A src",
+    "postversion": "git push && git push --tags",
+    "genNetworksList": "ts-node --skip-project ./genNetworksList.ts"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.3",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@types/node": "^18.11.18",
+    "axios": "^1.2.3",
+    "rollup": "^2.70.1",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-typescript2": "^0.31.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  }
+}
