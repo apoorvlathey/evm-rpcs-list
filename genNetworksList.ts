@@ -1793,10 +1793,17 @@ function removeEndingSlashObject(rpc: ExtraRPC) {
   }
 }
 
-export interface ChainInfo {
+interface ChainInfo {
   name: string;
   rpc: string[];
   chainId: number;
+}
+
+interface Chains {
+  [chainId: number]: {
+    name: string;
+    rpcs: string[];
+  };
 }
 
 const deprecatedChainIds = [
@@ -1810,34 +1817,37 @@ const main = async () => {
     await axios("https://chainid.network/chains.json")
   ).data) as ChainInfo[];
 
-  const chains = fetchedChains
+  const chains: Chains = {};
+
+  fetchedChains
     .filter((c) => !deprecatedChainIds.includes(c.chainId))
     .map((chain) => {
-      let rpc: ChainInfo["rpc"] = [];
+      let rpcs: Chains[number]["rpcs"] = [];
 
       const extraRpcs = allExtraRpcs[chain.chainId]?.rpcs as ExtraRPC[];
       if (extraRpcs) {
-        const rpcs = extraRpcs.map(removeEndingSlashObject);
+        const erpcs = extraRpcs.map(removeEndingSlashObject);
 
         chain.rpc
           .filter((rpc) => !rpc.includes("${INFURA_API_KEY}"))
           .forEach((rpc) => {
             const rpcObj = removeEndingSlashObject(rpc);
-            if (rpcs.find((r) => r === rpcObj) === undefined) {
-              rpcs.push(rpcObj);
+            if (erpcs.find((r) => r === rpcObj) === undefined) {
+              erpcs.push(rpcObj);
             }
           });
 
-        rpc = rpcs;
+        rpcs = erpcs;
       } else {
-        rpc = rpc.map(removeEndingSlashObject);
+        rpcs = chain.rpc.map(removeEndingSlashObject);
       }
 
-      return {
-        chainId: chain.chainId,
+      chains[chain.chainId] = {
         name: chain.name,
-        rpc,
+        rpcs,
       };
+
+      return;
     });
 
   fs.writeFileSync("./src/networksList.json", JSON.stringify(chains));
