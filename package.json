@@ -1,6 +1,6 @@
 {
   "name": "evm-rpcs-list",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "List of EVM chains & their RPCs in one place",
   "author": "apoorvlathey <apoorv.xyz>",
   "license": "MIT",
