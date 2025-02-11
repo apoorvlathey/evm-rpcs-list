@@ -1,5 +1,5 @@
 import axios from "axios";
-import { _allExtraRpcs } from "./constants";
+const _allExtraRpcs = require("./data/allExtraRpcs.json");
 const fs = require("fs");
 const prettier = require("prettier");
 
@@ -11,7 +11,7 @@ interface RPCWithTracking {
 
 type ExtraRPC = string | RPCWithTracking;
 
-const allExtraRpcs = _allExtraRpcs as unknown as {
+const extraRpcsMap = _allExtraRpcs as unknown as {
   [chainId: number]: {
     rpcs: ExtraRPC[];
   };
@@ -61,7 +61,7 @@ const main = async () => {
     .map((chain) => {
       let rpcs: Chains[number]["rpcs"] = [];
 
-      const extraRpcs = allExtraRpcs[chain.chainId]?.rpcs as ExtraRPC[];
+      const extraRpcs = extraRpcsMap[chain.chainId]?.rpcs as ExtraRPC[];
       if (extraRpcs) {
         const erpcs = extraRpcs.map(removeEndingSlashObject);
 
