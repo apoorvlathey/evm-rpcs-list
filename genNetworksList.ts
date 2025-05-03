@@ -31,14 +31,8 @@ function removeEndingSlashObject(rpc: ExtraRPC) {
 
 interface ChainInfo {
   name: string;
-  rpc: RPC[];
+  rpc: RPCWithTracking[];
   chainId: number;
-}
-
-interface RPC {
-  url: string;
-  isOpenSource?: boolean;
-  tracking?: string;
 }
 
 interface Chains {
@@ -74,7 +68,7 @@ const main = async () => {
         chain.rpc
           .filter((rpc) => !rpc.url.includes("${INFURA_API_KEY}"))
           .forEach((rpc) => {
-            const rpcObj = removeEndingSlashObject(rpc.url);
+            const rpcObj = removeEndingSlashObject(rpc);
             if (erpcs.find((r) => r === rpcObj) === undefined) {
               erpcs.push(rpcObj);
             }
@@ -82,7 +76,7 @@ const main = async () => {
 
         rpcs = erpcs;
       } else {
-        rpcs = chain.rpc.map(rpc => removeEndingSlashObject(rpc.url));
+        rpcs = chain.rpc.map(removeEndingSlashObject);
       }
 
       chains[chain.chainId] = {
