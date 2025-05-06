@@ -31,7 +31,7 @@ function removeEndingSlashObject(rpc: ExtraRPC) {
 
 interface ChainInfo {
   name: string;
-  rpc: string[];
+  rpc: RPCWithTracking[];
   chainId: number;
 }
 
@@ -51,7 +51,7 @@ const deprecatedChainIds = [
 
 const main = async () => {
   let fetchedChains = (await (
-    await axios("https://chainid.network/chains.json")
+    await axios("https://chainlist.org/rpcs.json")
   ).data) as ChainInfo[];
 
   const chains: Chains = {};
@@ -66,7 +66,7 @@ const main = async () => {
         const erpcs = extraRpcs.map(removeEndingSlashObject);
 
         chain.rpc
-          .filter((rpc) => !rpc.includes("${INFURA_API_KEY}"))
+          .filter((rpc) => !rpc.url.includes("${INFURA_API_KEY}"))
           .forEach((rpc) => {
             const rpcObj = removeEndingSlashObject(rpc);
             if (erpcs.find((r) => r === rpcObj) === undefined) {
